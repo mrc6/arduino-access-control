@@ -206,7 +206,7 @@ void loop () {
     ///////////////////////////CLI////////////////////////////////
     // Chame o modulo serial
     int lidoDaSerial = serialCLI();
-    if(lidoDaSerial ==(int)'s'){
+    if(lidoDaSerial == 's'){
       Serial.println("CLI Menu");
       Serial.println("c - cadastrar novo RFID");
       Serial.println("e - excluir RFID");
@@ -223,10 +223,8 @@ void loop () {
     if(lidoDaSerial == 'x'){
       Serial.print('\n');
         Serial.println(F("Deseja excluir TODOS os RFIDs cadastrados? (S/N): "));
-        int sn = -1;
-        while(sn == -1){
-          sn = serialCLI();
-        }
+        int sn = getResponse();
+        
         if(sn == 's' || sn == 'S'){
           Serial.print('\n');
           Serial.println(F("Todos os RFIDs serão apagados"));
@@ -234,99 +232,35 @@ void loop () {
           Serial.println("-----------------------------");
           Serial.println(F("Waiting PICCs to be scanned"));
         } else {
-          Serial.print('\n');
-          Serial.println(F("Nada será feito!"));
-          Serial.println(F("Waiting PICCs to be scanned"));
+          negativeResponse();
         }
     }
-    if(lidoDaSerial ==(int)'e'){
-      byte serialKeyToHex[4];
-      int keyboard[8];
-      
-      Serial.println(F("Digite o numero do RFID a ser excluido"));
-      int rfid = -1;
-      int iterate = 0;
-      byte exclusao[4];
+    
+    if(lidoDaSerial == 'e'){
+      includeOrDeleteID('e');
+    }
 
-     while(iterate<8){
-       rfid = serialCLI();
-       if(iterate < 8){
-        if(rfid != -1){
-          keyboard[iterate]=rfid;
-          iterate++;
-        }
-      }
-      if(iterate == 8) {
-        asciiToHexValue(keyboard, serialKeyToHex);
-        Serial.print('\n');
-        Serial.println("O RFID a ser excluído é :");
-        for( uint8_t i = 0; i < 4; i++ ){
-          Serial.print(serialKeyToHex[i], HEX);  
-        }
-        Serial.print('\n');
-        Serial.println(F("Deseja excluir o RFID acima? (S/N): "));
-        int sn = -1;
-        while(sn == -1){
-          sn = serialCLI();
-        }
-        if(sn == 's' || sn == 'S'){
-          Serial.print('\n');
-          Serial.println(F("O registro foi será apagado"));
-          deleteID(serialKeyToHex);
-          Serial.println("-----------------------------");
-          Serial.println(F("Waiting PICCs to be scanned"));
-        } else {
-          Serial.print('\n');
-          Serial.println(F("Nada será feito!"));
-          Serial.println(F("Waiting PICCs to be scanned"));
-        }
-      }
-     }
+    if(lidoDaSerial == 'c'){
+      includeOrDeleteID('c');
     }
-    if(lidoDaSerial ==(int)'c'){
-      byte serialKeyToHex[4];
-      int keyboard[8];
-      
-      Serial.println(F("Digite o numero do RFID a ser cadastrado"));
-      int rfid = -1;
-      int iterate = 0;
-      byte exclusao[4];
 
-     while(iterate<8){
-       rfid = serialCLI();
-       if(iterate < 8){
-        if(rfid != -1){
-          keyboard[iterate]=rfid;
-          iterate++;
-        }
+    if(lidoDaSerial == 'm'){
+      Serial.println(F("Deseja apagar o master? (S/N) :"));
+
+      int sn = getResponse();
+     
+      if(sn == 's' || sn == 'S'){
+        EEPROM.write(1, 0);                  // Reset Magic Number.
+        Serial.println(F("Master Card Erased from device"));
+        Serial.println(F("Please reset to re-program Master Card"));
+        while (1);
       }
-      if(iterate == 8) {
-        asciiToHexValue(keyboard, serialKeyToHex);
-        Serial.print('\n');
-        Serial.println("O RFID a ser cadastrado é :");
-        for( uint8_t i = 0; i < 4; i++ ){
-          Serial.print(serialKeyToHex[i], HEX);  
-        }
-        Serial.print('\n');
-        Serial.println(F("Deseja cadastrar o RFID acima? (S/N): "));
-        int sn = -1;
-        while(sn == -1){
-          sn = serialCLI();
-        }
-        if(sn == 's' || sn == 'S'){
-          Serial.print('\n');
-          Serial.println(F("O registro foi será cadastrado"));
-          writeID(serialKeyToHex);
-          Serial.println("-----------------------------");
-          Serial.println(F("Waiting PICCs to be scanned"));
-        } else {
-          Serial.print('\n');
-          Serial.println(F("Nada será feito!"));
-          Serial.println(F("Waiting PICCs to be scanned"));
-        }
-      }
-     }
     }
+
+    if(lidoDaSerial == 'n'){
+      includeOrDeleteID('n');
+    }
+    
     //////////////////////////////////////////////////////////////
     successRead = getID();  // sets successRead to 1 when we get read from reader otherwise 0
     // When device is in use if wipe button pressed for 10 seconds initialize Master Card wiping
@@ -673,16 +607,6 @@ int serialCLI(){
    return -1;
   }
 
-/////////////////////intToHex/////////////////////////////////////
-  void intToHexValue(int toExtract[], byte resultArray[]){
-    //static int convertedValues[4];
-    //static int auxiliar[4];
-    for (int i=0; i<8; i+=2)
-    {     
-     resultArray[i/2] = (toExtract[i])*16 + (toExtract[i+1]);
-    }
-  }
-
 ////////////////////ASCIIToHex/////////////////////////////////////
   void asciiToHexValue(int toExtract[], byte resultArray[]){
     int changedArray[8];
@@ -762,5 +686,118 @@ void deleteAllID() {
   for ( uint8_t i = 1; i <= count; i++ ) {    // Loop once for each EEPROM entry
     readID(i);          // Read an ID from EEPROM, it is stored in storedCard[4]
     deleteID(storedCard);
+  }
+}
+
+//////////////////////////////////////// Read Response //////////////////////////////////////////////////////
+int getResponse(){
+  int sn = -1;
+    while(sn == -1){
+      sn = serialCLI();
+    }
+  return sn;
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////// Negative Response Default Phrase //////////////////////////////////
+void negativeResponse(){
+  Serial.print('\n');
+  Serial.println(F("Nada será feito!"));
+  Serial.println(F("Waiting PICCs to be scanned"));
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////// Include / Delete ID ////////////////////////////////////////////////
+void includeOrDeleteID(int option){
+  byte serialKeyToHex[4];
+  int keyboard[8];
+  
+  // Frases de chamada ///////////////////////////////////////
+  if(option == 'e'){
+    Serial.println(F("Digite o numero do RFID a ser excluido"));
+  }
+  if(option == 'c'){
+    Serial.println(F("Digite o numero do RFID a ser cadastrado"));
+  }
+  if(option == 'n'){
+    Serial.println(F("Digite o numero do RFID do master"));
+  }
+  ////////////////////////////////////////////////////////////
+  
+  int rfid = -1;
+  int iterate = 0;
+  byte exclusao[4];
+
+  while(iterate<8){
+    rfid = serialCLI();
+    if(iterate < 8){
+      if(rfid != -1){
+        keyboard[iterate]=rfid;
+        iterate++;
+      }
+    }
+    if(iterate == 8) {
+      asciiToHexValue(keyboard, serialKeyToHex);
+      Serial.print('\n');
+
+      // Frases de confirmação /////////////////////////////////
+      if(option == 'e'){
+        Serial.println("O RFID a ser excluído é :");
+      }
+      if(option =='c'){
+        Serial.println("O RFID a ser cadastrado é :");
+      }
+      if(option == 'n'){
+        Serial.println("O RFID a ser cadastrado como master é :");
+      }
+      //////////////////////////////////////////////////////////
+
+      for( uint8_t i = 0; i < 4; i++ ){
+        Serial.print(serialKeyToHex[i], HEX);  
+      }
+      Serial.print('\n');
+      
+      // Frases sobre o que fazer com o ID /////////////////////
+      if(option == 'e'){
+        Serial.println(F("Deseja excluir o RFID acima? (S/N): "));
+      }
+      if(option == 'c'){
+        Serial.println(F("Deseja cadastrar o RFID acima? (S/N): "));
+      }
+      if(option == 'n'){
+        Serial.println(F("Deseja cadastrar o RFID acima como master? (S/N): "));
+      }
+      //////////////////////////////////////////////////////////
+
+      int sn = getResponse();
+      
+      if(sn == 's' || sn == 'S'){
+        Serial.print('\n');
+
+        // Decisão sobre o que fazer do ID /////////////////////
+        if(option == 'e'){
+          Serial.println(F("O registro será apagado"));
+          deleteID(serialKeyToHex);
+        }
+        if(option == 'c'){
+          Serial.println(F("O registro será cadastrado"));
+          writeID(serialKeyToHex);
+        }
+        if(option == 'n'){
+          Serial.println(F("O registro master será cadastrado"));
+          for ( uint8_t j = 0; j < 4; j++ ) {        // Loop 4 times
+            EEPROM.write( 2 + j, serialKeyToHex[j] );  // Write scanned PICC's UID to EEPROM, start from address 3
+          }
+          EEPROM.write(1, 143);                  // Write to EEPROM we defined Master Card.
+          Serial.println(F("Master Card Defined"));
+        }
+        ////////////////////////////////////////////////////////
+        
+        Serial.println("-----------------------------");
+        Serial.println(F("Waiting PICCs to be scanned"));
+      } else {
+        negativeResponse();
+      }
+    }
   }
 }
