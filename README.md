@@ -73,8 +73,8 @@ system which can record the read IDs and identify them by time.
    Pin Layout
 The following table shows the typical pin layout used:
 
- 	PCD	Arduino
-MFRC522	Uno / 101	Mega	Nano v3	Leonardo / Micro	Pro Micro	Yun [4]	Due
+| 	PCD	|Arduino|
+|MFRC522| Uno / 101	|Mega|	Nano v3|	Leonardo / Micro|	Pro Micro|	Yun [4]|	Due|
 Signal	Pin	Pin	Pin	Pin	Pin	Pin	Pin	Pin
 RST/Reset	RST	9 [1]	5 [1]	D9	RESET / ICSP-5	RST	Pin9	22 [1]
 SPI SS	SDA [3]	10 [2]	53 [2]	D10	10	10	Pin10	23 [2]
