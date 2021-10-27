@@ -27,35 +27,6 @@ system which can record the read IDs and identify them by time.
    --------------------------------------------------------------------------------------------------------------------
    This is a MFRC522 library example; for further details and other examples see: https://github.com/miguelbalboa/rfid
 
-   This example showing a complete Door Access Control System
-
-  Simple Work Flow (not limited to) :
-                                     +---------+
-  +----------------------------------->READ TAGS+^------------------------------------------+
-  |                              +--------------------+                                     |
-  |                              |                    |                                     |
-  |                              |                    |                                     |
-  |                         +----v-----+        +-----v----+                                |
-  |                         |MASTER TAG|        |OTHER TAGS|                                |
-  |                         +--+-------+        ++-------------+                            |
-  |                            |                 |             |                            |
-  |                            |                 |             |                            |
-  |                      +-----v---+        +----v----+   +----v------+                     |
-  |         +------------+READ TAGS+---+    |KNOWN TAG|   |UNKNOWN TAG|                     |
-  |         |            +-+-------+   |    +-----------+ +------------------+              |
-  |         |              |           |                |                    |              |
-  |    +----v-----+   +----v----+   +--v--------+     +-v----------+  +------v----+         |
-  |    |MASTER TAG|   |KNOWN TAG|   |UNKNOWN TAG|     |GRANT ACCESS|  |DENY ACCESS|         |
-  |    +----------+   +---+-----+   +-----+-----+     +-----+------+  +-----+-----+         |
-  |                       |               |                 |               |               |
-  |       +----+     +----v------+     +--v---+             |               +--------------->
-  +-------+EXIT|     |DELETE FROM|     |ADD TO|             |                               |
-          +----+     |  EEPROM   |     |EEPROM|             |                               |
-                     +-----------+     +------+             +-------------------------------+
-
-
-   Use a Master Card which is act as Programmer then you can able to choose card holders who will granted access or not
-
  * **Easy User Interface**
 
    Just one RFID tag needed whether Delete or Add Tags. You can choose to use Leds for output or Serial LCD module to inform users.
@@ -77,19 +48,21 @@ The following table shows the typical pin layout used:
 |--|--|--|--|--|--|--|--|--|
 | Signal|Pin|Pin|Pin|Pin|Pin|Pin|Pin|Pin|
 |RST/Reset|RST|9[1]|5[1]|D9|RESET / ICSP-5|RST|Pin9|22 [1]|
+|SPI SS|SDA [3]|10 [2]|53 [2]|D10|10|10|Pin10|23 [2]|
+|SPI MOSI|MOSI|11 / ICSP-4|51|D11|ICSP-4|16|ICSP4|SPI-4|
+|SPI MISO|MISO|12 / ICSP-1|50|D12|ICSP-1|14|ICSP1|SPI-1|
+|SPI SCK|SCK|13 / ICSP-3|52|D13|ICSP-3|15|ICSP3|SPI-3|
 
-SPI SS	SDA [3]	10 [2]	53 [2]	D10	10	10	Pin10	23 [2]
-SPI MOSI	MOSI	11 / ICSP-4	51	D11	ICSP-4	16	ICSP4	SPI-4
-SPI MISO	MISO	12 / ICSP-1	50	D12	ICSP-1	14	ICSP1	SPI-1
-SPI SCK	SCK	13 / ICSP-3	52	D13	ICSP-3	15	ICSP3	SPI-3
- 	ESP8266	Teensy
-Wemos D1 mini	2.0	++ 2.0	3.1
-Signal	Pin	Pin	Pin	Pin
-RST/Reset	D3	7	4	9
-SPI SS	D8	0	20	10
-SPI MOSI	D7	2	22	11
-SPI MISO	D6	3	23	12
-SPI SCK	D5	1	21	13
+|ESP8266|Teensy|
+|--|--|--|--|
+|Wemos D1 mini	2.0	++ 2.0	3.1|
+|Signal|Pin|Pin|Pin|Pin|
+|RST/Reset|D3|7|4|9|
+|SPI SS|D8|0|20|10|
+|SPI MOSI|D7|2|22|11|
+|SPI MISO|D6|3|23|12|
+|SPI SCK|D5|1|21|13|
+
 [1]	(1, 2, 3) Configurable, typically defined as RST_PIN in sketch/program.
 [2]	(1, 2, 3) Configurable, typically defined as SS_PIN in sketch/program.
 [3]	The SDA pin might be labeled SS on some/older MFRC522 boards.
