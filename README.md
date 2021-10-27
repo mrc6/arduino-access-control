@@ -53,9 +53,9 @@ The following table shows the typical pin layout used:
 |SPI MISO|MISO|12 / ICSP-1|50|D12|ICSP-1|14|ICSP1|SPI-1|
 |SPI SCK|SCK|13 / ICSP-3|52|D13|ICSP-3|15|ICSP3|SPI-3|
 
-|ESP8266|Teensy||||
+||ESP8266|Teensy|||
 |--|--|--|--|--|
-|Wemos D1 mini|2.0|++ 2.0|3.1|
+||Wemos D1 mini|2.0|++ 2.0|3.1|
 |Signal|Pin|Pin|Pin|Pin|
 |RST/Reset|D3|7|4|9|
 |SPI SS|D8|0|20|10|
@@ -63,11 +63,11 @@ The following table shows the typical pin layout used:
 |SPI MISO|D6|3|23|12|
 |SPI SCK|D5|1|21|13|
 
-[1]	(1, 2, 3) Configurable, typically defined as RST_PIN in sketch/program.
-[2]	(1, 2, 3) Configurable, typically defined as SS_PIN in sketch/program.
-[3]	The SDA pin might be labeled SS on some/older MFRC522 boards.
-[4]	Source: https://github.com/miguelbalboa/rfid/issues/111#issuecomment-420433658 .
-Important: If your micro controller supports multiple SPI interfaces, the library only uses the default (first) SPI of the Arduino framework.
+[1]	(1, 2, 3) Configurable, typically defined as RST_PIN in sketch/program. 
+[2]	(1, 2, 3) Configurable, typically defined as SS_PIN in sketch/program. 
+[3]	The SDA pin might be labeled SS on some/older MFRC522 boards. 
+[4]	Source: https://github.com/miguelbalboa/rfid/issues/111#issuecomment-420433658 . 
+Important: If your micro controller supports multiple SPI interfaces, the library only uses the default (first) SPI of the Arduino framework. 
   
   CLI Menu
     s - show this CLI Menu
