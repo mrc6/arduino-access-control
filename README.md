@@ -1,4 +1,5 @@
-PT-BR
+# arduino-access-control  
+PT-BR 
 Controle de acesso com Arduino via leitura de Tag RFID.
 
 Esta versão possui um menu CLI escondido que é mostrado quando o Arduino receber o caracter 's' via comunicação serial (Baud 9600).
@@ -20,11 +21,9 @@ You can use the reader itself to know in advance the hexadecimal number of the T
 Using an external program it is also possible to capture the data sent by serial communication and create a log file
 system which can record the read IDs and identify them by time.
 
-# arduino-access-control
+
    Project improved by Marco Barbosa ---> https://github.com/mrc6/arduino-access-control
-   --------------------------------------------------------------------------------------------------------------------
-   Example sketch/program showing An Arduino Door Access Control featuring RFID, EEPROM, Relay
-   --------------------------------------------------------------------------------------------------------------------
+   
    This is a MFRC522 library example; for further details and other examples see: https://github.com/miguelbalboa/rfid
 
  * **Easy User Interface**
@@ -63,17 +62,17 @@ The following table shows the typical pin layout used:
 |SPI MISO|D6|3|23|12|
 |SPI SCK|D5|1|21|13|
 
-[1]	(1, 2, 3) Configurable, typically defined as RST_PIN in sketch/program. 
-[2]	(1, 2, 3) Configurable, typically defined as SS_PIN in sketch/program. 
-[3]	The SDA pin might be labeled SS on some/older MFRC522 boards. 
+[1]	(1, 2, 3) Configurable, typically defined as RST_PIN in sketch/program.  
+[2]	(1, 2, 3) Configurable, typically defined as SS_PIN in sketch/program.  
+[3]	The SDA pin might be labeled SS on some/older MFRC522 boards.  
 [4]	Source: https://github.com/miguelbalboa/rfid/issues/111#issuecomment-420433658 . 
 Important: If your micro controller supports multiple SPI interfaces, the library only uses the default (first) SPI of the Arduino framework. 
   
-  CLI Menu
-    s - show this CLI Menu
-    c - register new ID
-    e - delete ID
-    l - list all registered IDs
-    m - delete master ID
-    n - register new master ID
-    x - delete ALL registered IDs
+  CLI Menu  
+    s - show this CLI Menu  
+    c - register new ID  
+    e - delete ID  
+    l - list all registered IDs  
+    m - delete master ID  
+    n - register new master ID  
+    x - delete ALL registered IDs  
