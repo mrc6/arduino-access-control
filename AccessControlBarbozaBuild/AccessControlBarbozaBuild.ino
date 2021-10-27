@@ -1,4 +1,5 @@
-/*
+/* 
+   Project improved by Marco Barbosa ---> https://github.com/mrc6/arduino-access-control
    --------------------------------------------------------------------------------------------------------------------
    Example sketch/program showing An Arduino Door Access Control featuring RFID, EEPROM, Relay
    --------------------------------------------------------------------------------------------------------------------
@@ -53,8 +54,8 @@
                Reader/PCD   Uno/101       Mega      Nano v3    Leonardo/Micro   Pro Micro
    Signal      Pin          Pin           Pin       Pin        Pin              Pin
    -----------------------------------------------------------------------------------------
-   RST/Reset   RST          8             5         D9         RESET/ICSP-5     RST
-   SPI SS      SDA(SS)      9            53        D10        10               10
+   RST/Reset   RST          8             5         D8         RESET/ICSP-5     RST
+   SPI SS      SDA(SS)      9            53         D9         10               10
    SPI MOSI    MOSI         11 / ICSP-4   51        D11        ICSP-4           16
    SPI MISO    MISO         12 / ICSP-1   50        D12        ICSP-1           14
    SPI SCK     SCK          13 / ICSP-3   52        D13        ICSP-3           15
@@ -77,7 +78,7 @@
   to use common cathode led or just seperate leds, simply comment out #define COMMON_ANODE,
 */
 
-#define COMMON_ANODE
+//#define COMMON_ANODE
 
 #ifdef COMMON_ANODE
 #define LED_ON LOW
@@ -129,7 +130,7 @@ void setup() {
   //If you set Antenna Gain to Max it will increase reading distance
   //mfrc522.PCD_SetAntennaGain(mfrc522.RxGain_max);
 
-  Serial.println(F("Access Control Example v0.1"));   // For debugging purposes
+  Serial.println(F("Access Control Example v0.2"));   // For debugging purposes
   ShowReaderDetails();  // Show details of PCD - MFRC522 Card Reader details
 
   //Wipe Code - If the Button (wipeB) Pressed while setup run (powered on) it wipes EEPROM
@@ -208,12 +209,12 @@ void loop () {
     int lidoDaSerial = serialCLI();
     if(lidoDaSerial == 's'){
       Serial.println("CLI Menu");
-      Serial.println("c - cadastrar novo RFID");
-      Serial.println("e - excluir RFID");
-      Serial.println("l - listar todos os RFIDs cadastrados");
-      Serial.println("m - cadastrar novo master");
-      Serial.println("n - excluir master");
-      Serial.println("x - excluir TODOS os RFIDs cadastrados");
+      Serial.println("c - register new ID");
+      Serial.println("e - delete ID");
+      Serial.println("l - list all registered IDs");
+      Serial.println("m - delete master ID");
+      Serial.println("n - register new master ID");
+      Serial.println("x - delete ALL registered IDs");
     }
 
     if(lidoDaSerial == 'l'){
@@ -222,12 +223,12 @@ void loop () {
 
     if(lidoDaSerial == 'x'){
       Serial.print('\n');
-        Serial.println(F("Deseja excluir TODOS os RFIDs cadastrados? (S/N): "));
+        Serial.println(F("Do you want to delete ALL registered IDs? (Y/N): "));
         int sn = getResponse();
         
-        if(sn == 's' || sn == 'S'){
+        if(sn == 'y' || sn == 'Y'){
           Serial.print('\n');
-          Serial.println(F("Todos os RFIDs serão apagados"));
+          Serial.println(F("All IDs will be erased"));
           deleteAllID();
           Serial.println("-----------------------------");
           Serial.println(F("Waiting PICCs to be scanned"));
@@ -245,11 +246,11 @@ void loop () {
     }
 
     if(lidoDaSerial == 'm'){
-      Serial.println(F("Deseja apagar o master? (S/N) :"));
+      Serial.println(F("Do you want to delete the master ID? (Y/N) :"));
 
       int sn = getResponse();
      
-      if(sn == 's' || sn == 'S'){
+      if(sn == 'y' || sn == 'Y'){
         EEPROM.write(1, 0);                  // Reset Magic Number.
         Serial.println(F("Master Card Erased from device"));
         Serial.println(F("Please reset to re-program Master Card"));
@@ -259,6 +260,7 @@ void loop () {
 
     if(lidoDaSerial == 'n'){
       includeOrDeleteID('n');
+      Serial.println(F("Please reset to re-program Master Card"));
     }
     
     //////////////////////////////////////////////////////////////
@@ -702,7 +704,7 @@ int getResponse(){
 ///////////////////////////////////////// Negative Response Default Phrase //////////////////////////////////
 void negativeResponse(){
   Serial.print('\n');
-  Serial.println(F("Nada será feito!"));
+  Serial.println(F("Nothing will be done!"));
   Serial.println(F("Waiting PICCs to be scanned"));
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -714,13 +716,13 @@ void includeOrDeleteID(int option){
   
   // Frases de chamada ///////////////////////////////////////
   if(option == 'e'){
-    Serial.println(F("Digite o numero do RFID a ser excluido"));
+    Serial.println(F("Enter the ID number to be deleted"));
   }
   if(option == 'c'){
-    Serial.println(F("Digite o numero do RFID a ser cadastrado"));
+    Serial.println(F("Enter the ID number to be registered"));
   }
   if(option == 'n'){
-    Serial.println(F("Digite o numero do RFID do master"));
+    Serial.println(F("Enter the master's ID number"));
   }
   ////////////////////////////////////////////////////////////
   
@@ -742,49 +744,49 @@ void includeOrDeleteID(int option){
 
       // Frases de confirmação /////////////////////////////////
       if(option == 'e'){
-        Serial.println("O RFID a ser excluído é :");
+        Serial.println("The ID to be deleted is :");
       }
       if(option =='c'){
-        Serial.println("O RFID a ser cadastrado é :");
+        Serial.println("The ID to be registered is :");
       }
       if(option == 'n'){
-        Serial.println("O RFID a ser cadastrado como master é :");
+        Serial.println("The ID to be registered as a master is :");
       }
       //////////////////////////////////////////////////////////
 
       for( uint8_t i = 0; i < 4; i++ ){
-        Serial.print(serialKeyToHex[i], HEX);  
+        Serial.print(serialKeyToHex[i], HEX);
       }
       Serial.print('\n');
       
       // Frases sobre o que fazer com o ID /////////////////////
       if(option == 'e'){
-        Serial.println(F("Deseja excluir o RFID acima? (S/N): "));
+        Serial.println(F("Do you want to delete the above ID? (Y/N): "));
       }
       if(option == 'c'){
-        Serial.println(F("Deseja cadastrar o RFID acima? (S/N): "));
+        Serial.println(F("Do you want to register the above ID? (Y/N): "));
       }
       if(option == 'n'){
-        Serial.println(F("Deseja cadastrar o RFID acima como master? (S/N): "));
+        Serial.println(F("Do you want to register the above ID as master? (Y/N): "));
       }
       //////////////////////////////////////////////////////////
 
       int sn = getResponse();
       
-      if(sn == 's' || sn == 'S'){
+      if(sn == 'y' || sn == 'Y'){
         Serial.print('\n');
 
         // Decisão sobre o que fazer do ID /////////////////////
         if(option == 'e'){
-          Serial.println(F("O registro será apagado"));
+          Serial.println(F("The record will be deleted"));
           deleteID(serialKeyToHex);
         }
         if(option == 'c'){
-          Serial.println(F("O registro será cadastrado"));
+          Serial.println(F("The record will be registered"));
           writeID(serialKeyToHex);
         }
         if(option == 'n'){
-          Serial.println(F("O registro master será cadastrado"));
+          Serial.println(F("The master record will be registered"));
           for ( uint8_t j = 0; j < 4; j++ ) {        // Loop 4 times
             EEPROM.write( 2 + j, serialKeyToHex[j] );  // Write scanned PICC's UID to EEPROM, start from address 3
           }
