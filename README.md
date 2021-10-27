@@ -1,5 +1,5 @@
 # arduino-access-control  
-PT-BR 
+```PT-BR```  
 Controle de acesso com Arduino via leitura de Tag RFID.
 
 Esta versão possui um menu CLI escondido que é mostrado quando o Arduino receber o caracter 's' via comunicação serial (Baud 9600).
@@ -10,7 +10,7 @@ Pode-se usar o próprio leitor para saber previamente o número hexadecimal da T
 Usando um programa externo também é possível capturar os dados enviados pela comunicação serial e criar um arquivo de log
 do sistema o qual pode registrar os ID lidos e identificá-los por horário.
 
-EN
+```EN```  
 Access control with Arduino via RFID Tag reading.
 
 This version has a hidden CLI menu which is shown when the Arduino receives the 's' character via serial communication (Baud 9600).
@@ -76,3 +76,6 @@ Important: If your micro controller supports multiple SPI interfaces, the librar
     m - delete master ID  
     n - register new master ID  
     x - delete ALL registered IDs  
+
+* **Implementation**
+This example was tested on Arduino Uno hardware. The SS and RST pins on the SPI interface have been configured for pins 9 and 8 respectively.
