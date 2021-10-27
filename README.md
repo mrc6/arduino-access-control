@@ -53,9 +53,9 @@ The following table shows the typical pin layout used:
 |SPI MISO|MISO|12 / ICSP-1|50|D12|ICSP-1|14|ICSP1|SPI-1|
 |SPI SCK|SCK|13 / ICSP-3|52|D13|ICSP-3|15|ICSP3|SPI-3|
 
-|ESP8266|Teensy|
-|--|--|--|--|
-|Wemos D1 mini	2.0	++ 2.0	3.1|
+|ESP8266|Teensy||||
+|--|--|--|--|--|
+|Wemos D1 mini|2.0|++ 2.0|3.1|
 |Signal|Pin|Pin|Pin|Pin|
 |RST/Reset|D3|7|4|9|
 |SPI SS|D8|0|20|10|
