@@ -142,14 +142,7 @@ void setup() {
     bool buttonState = monitorWipeButton(10000); // Give user enough time to cancel operation
     if (buttonState == true && digitalRead(wipeB) == LOW) {    // If button still be pressed, wipe EEPROM
       Serial.println(F("Starting Wiping EEPROM"));
-      for (uint16_t x = 0; x < EEPROM.length(); x = x + 1) {    //Loop end of EEPROM address
-        if (EEPROM.read(x) == 0) {              //If EEPROM address 0
-          // do nothing, already clear, go to the next address in order to save time and reduce writes to EEPROM
-        }
-        else {
-          EEPROM.write(x, 0);       // if not write 0 to clear, it takes 3.3mS
-        }
-      }
+      deleteAllID(); // Erasing all EEPROM registry
       Serial.println(F("EEPROM Successfully Wiped"));
       digitalWrite(redLed, LED_OFF);  // visualize a successful wipe
       delay(200);
@@ -162,7 +155,7 @@ void setup() {
       digitalWrite(redLed, LED_OFF);
     }
     else {
-      Serial.println(F("Wiping Cancelled")); // Show some feedback that the wipe button did not pressed for 15 seconds
+      Serial.println(F("Wiping Cancelled")); // Show some feedback that the wipe button did not pressed for 10 seconds
       digitalWrite(redLed, LED_OFF);
     }
   }
