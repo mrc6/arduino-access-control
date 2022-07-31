@@ -375,8 +375,10 @@ uint8_t getID() {
   Serial.println(F("Scanned PICC's UID:"));
   for ( uint8_t i = 0; i < 4; i++) {  //
     readCard[i] = mfrc522.uid.uidByte[i];
-    Serial.print(readCard[i], HEX);
   }
+
+  printHexWithZeros(readCard);
+  
   Serial.println("");
   mfrc522.PICC_HaltA(); // Stop reading
   return 1;
@@ -662,9 +664,9 @@ int serialCLI(){
         changedArray[i]=15;
       }
     }
-    
+     
     for (int i=0; i<8; i+=2)
-    {     
+    {
      resultArray[i/2] = (changedArray[i])*16 + (changedArray[i+1]);
     }
   }
@@ -675,9 +677,7 @@ void showAllID() {
   uint8_t count = EEPROM.read(0);     // Read the first Byte of EEPROM that
   for ( uint8_t i = 1; i <= count; i++ ) {    // Loop once for each EEPROM entry
     readID(i);          // Read an ID from EEPROM, it is stored in storedCard[4]
-    for(uint8_t j = 0; j < 4; j++){
-      Serial.print(storedCard[j], HEX);
-    }
+    printHexWithZeros(storedCard);
     Serial.print('\n');
   }
 }
@@ -706,6 +706,19 @@ void negativeResponse(){
   Serial.print('\n');
   Serial.println(F("Nothing will be done!"));
   Serial.println(F("Waiting PICCs to be scanned"));
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void printHexWithZeros(byte hexNumber[]){
+   for( uint8_t i = 0; i < 4; i++ ){
+    if(hexNumber[i] <=9 ){
+      Serial.print("0");
+      Serial.print(hexNumber[i], HEX);
+    } else {
+      Serial.print(hexNumber[i], HEX);
+    }
+   }
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -754,9 +767,7 @@ void includeOrDeleteID(int option){
       }
       //////////////////////////////////////////////////////////
 
-      for( uint8_t i = 0; i < 4; i++ ){
-        Serial.print(serialKeyToHex[i], HEX);
-      }
+      printHexWithZeros(serialKeyToHex);
       Serial.print('\n');
       
       // Frases sobre o que fazer com o ID /////////////////////
