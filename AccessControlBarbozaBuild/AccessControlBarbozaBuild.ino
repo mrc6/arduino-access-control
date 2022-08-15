@@ -705,7 +705,7 @@ void negativeResponse(){
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void printHexWithZeros(byte hexNumber[]){
    for( uint8_t i = 0; i < 4; i++ ){
-    if(hexNumber[i] <=9 ){
+    if(hexNumber[i] <= 15 ){
       Serial.print("0");
       Serial.print(hexNumber[i], HEX);
     } else {
